@@ -237,8 +237,11 @@ namespace UnityEngine.InputSystem.UI
             eventSystem.RaycastAll(eventData, m_RaycastResultCache);
             var result = FindFirstRaycast(m_RaycastResultCache);
             m_RaycastResultCache.Clear();
+
             return result;
         }
+
+        public Vector2? ExplicitMousePosition { get; set; }
 
         // Mouse, pen, touch, and tracked device pointer input all go through here.
         private void ProcessPointer(ref PointerModel state)
@@ -246,7 +249,7 @@ namespace UnityEngine.InputSystem.UI
             var eventData = state.eventData;
 
             // Sync position.
-            var pointerType = eventData.pointerType;
+            var pointerType = eventData.pointerType;            
             if (pointerType == UIPointerType.Tracked)
             {
                 var position = state.worldPosition;
@@ -1877,6 +1880,10 @@ namespace UnityEngine.InputSystem.UI
 
             ref var state = ref GetPointerStateForIndex(index);
             state.screenPosition = context.ReadValue<Vector2>();
+            if (ExplicitMousePosition.HasValue)
+            {
+                state.screenPosition = ExplicitMousePosition.Value;
+            }
         }
 
         // NOTE: In the click events, we specifically react to the Canceled phase to make sure we do NOT perform
