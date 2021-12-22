@@ -249,7 +249,8 @@ namespace UnityEngine.InputSystem.UI
             var eventData = state.eventData;
 
             // Sync position.
-            var pointerType = eventData.pointerType;            
+            var pointerType = eventData.pointerType;
+            
             if (pointerType == UIPointerType.Tracked)
             {
                 var position = state.worldPosition;
@@ -1880,6 +1881,10 @@ namespace UnityEngine.InputSystem.UI
 
             ref var state = ref GetPointerStateForIndex(index);
             state.screenPosition = context.ReadValue<Vector2>();
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                state.screenPosition = new Vector2(Screen.width / 2f, Screen.height / 2f);
+            }
             if (ExplicitMousePosition.HasValue)
             {
                 state.screenPosition = ExplicitMousePosition.Value;
